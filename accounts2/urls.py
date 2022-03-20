@@ -23,6 +23,4 @@ urlpatterns = [
     path('user_profile_information_view/<str:user>', views.user_profile_information_view, name="user_profile_information_view"),
     path('delete_login_user/', views.delete_login_user, name="delete_login_user"),
 
-
-
 ]
