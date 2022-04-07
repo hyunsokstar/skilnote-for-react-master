@@ -5,6 +5,30 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 
+class CommonSubject(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=20, blank=True, null= True)
+    description = models.CharField(max_length=20, blank=True, null= True)
+    created_at = models.DateTimeField(auto_now_add=True , editable = False)
+    
+    def __str__(self):
+        return '{} by {}'.format(self.subject, self.author)
+
+class LectureBookMark(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    title = models.CharField(max_length=20, blank=True, null= True)
+    lecture_url = models.CharField(max_length=40)
+    description = models.CharField(max_length=40)
+    created_at = models.DateTimeField(auto_now_add=True , editable = False)
+
+class MyPlan(models.Model):
+    owner_for_plan = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    plan_content = models.CharField(max_length=120)
+    completed = models.BooleanField(default=False)
+    start_time = models.DateTimeField(auto_now_add=True, blank=True)
+    end_time = models.DateTimeField(blank= True, null=True)
+    start_ca = models.CharField(max_length=30, default="ca1")
+    end_ca = models.CharField(max_length=30, default="ca1")
 
 class AllowListForSkilNote(models.Model):
     note_owner = models.ForeignKey(User, on_delete=models.CASCADE)
