@@ -8,9 +8,9 @@
 {%block content%}
 <br><br>
 
-<span class="mt-2">my profile</span>
-
-
+<h2>
+	프로필 페이지 #1122
+</h2>
 
 <table class="table table-bordered">
 
@@ -129,12 +129,25 @@
 		</td>
 	</tr>
 
+	<tr>commonsubject
+		<td>common subject</td>
+		<td colspan="3"> 
+			<!-- {{request.user.profile.common_subject}}  -->
+
+			<select class="common_subject">
+				{% for cs in common_subject_obj %}
+					<option value="{{cs.id}}" {% if request.user.profile.common_subject.subject == cs.subject %} selected {% endif %}>{{cs.subject}}</option>
+				{% endfor %}
+			</select>
+			
+
+		</td>
+	</tr>
 
 	<tr>
 		<td>reputation</td>
 		<td colspan="3"> {{ request.user.recommandationuseraboutskillnote_set.count }} 점</td>
 	</tr>
-
 
 
 </table>
@@ -143,7 +156,6 @@
 
 <button type="button" class="btn btn-outline-dark btn-block" id="update_complete_button_for_profile"
 	data-id="{{request.user.profile.id}}">Profile Update
-
 </button>
 
 <button type="button" class="btn btn-outline-primary btn-block" id="delete_login_user_btn"
@@ -447,6 +459,7 @@
 		var profile_first_category = $("#first_category").val();
 		var profile_last_category = $("#last_category").val();
 		var profile_public = $("input[name='profile_public']:checked").val();
+		var profile_common_subject = $(".common_subject option:selected").val();
 		
 		console.log("profile_id : ", profile_id);
 
@@ -471,6 +484,7 @@
 				first_category: profile_first_category,
 				last_category: profile_last_category,
 				profile_public : profile_public,
+				profile_common_subject , profile_common_subject,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
 
 			},
@@ -482,8 +496,6 @@
 			}
 
 		});
-
-
 
 	});
 
