@@ -134,12 +134,12 @@
 		<td colspan="3"> 
 			<!-- {{request.user.profile.common_subject}}  -->
 
-			<select class="common_subject">
-				{% for cs in common_subject_obj %}
-					<option value="{{cs.id}}" {% if request.user.profile.common_subject.subject == cs.subject %} selected {% endif %}>{{cs.subject}}</option>
-				{% endfor %}
-			</select>
-			
+            <select class="common_subject">
+                <option value="none">=== 선택 ===</option>
+                {% for cs in common_subject_obj %}
+                    <option value="{{cs.id}}" {% if request.user.profile.common_subject.subject == cs.subject %} selected {% endif %}>{{cs.subject}}</option>
+                {% endfor %}
+            </select>			
 
 		</td>
 	</tr>

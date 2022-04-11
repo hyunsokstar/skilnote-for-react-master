@@ -5,7 +5,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
-from wm.models import RecommandationUserAboutSkillNote, AllowListForSkilNote
+from wm.models import CommonSubject, RecommandationUserAboutSkillNote, AllowListForSkilNote
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -122,9 +122,6 @@ def like_or_unlike(request):
 
 # 2244
 def delete_login_user(request):
-    
-    print("유저 삭제 요청 check !!")
-    
     if request.method == "POST" and request.is_ajax():
         allowlistupdate = AllowListForSkilNote.objects.filter(member=request.user.username).delete()
         print("allowlistupdate delete_login_user count: ", allowlistupdate)
@@ -133,22 +130,10 @@ def delete_login_user(request):
         userId = request.POST['userId']
         user_id_for_delete = User.objects.get(username=userId)
         print("userId : ", userId)
-        
-        result_for_recommand = RecommandationUserAboutSkillNote.objects.filter(Q(author_id=user_id_for_delete))
-        
-        print("result_for_recommand : ", result_for_recommand)
-        
-        if(result_for_recommand.exists()):
-            result1 = RecommandationUserAboutSkillNote.objects.filter(
-                    Q(author_id=user_id_for_delete)).delete() 
-            print('회원 정보 삭제 (좋아요 목록 삭제 성공) ', result1)
-        else:
-            print("추천 삭제는 없음")       
-
-        # test = User.objects.filter(Q(username=userId))
-        # print("test : ", test)
-
+        result1 = RecommandationUserAboutSkillNote.objects.filter(
+            Q(author_id=user_id_for_delete)).delete()
         result2 = User.objects.filter(Q(username=userId)).delete()
+        print('회원 정보 삭제 (좋아요 목록 삭제 성공) ', result1)
         print('회원 정보 삭제 (회원 정보 삭제 성공) ', result2)
 
         return JsonResponse({
@@ -219,6 +204,15 @@ def update_for_profile(request, id):
         profile_last_category = request.POST.get('last_category', '')
         profile_public = request.POST.get('profile_public', '')
         
+        profile_common_subject_id = request.POST.get('profile_common_subject', '')
+                
+        print("profile_common_subject_id : ", profile_common_subject_id)            
+                
+        if(profile_common_subject_id != "none"):
+            selected_common_subject = CommonSubject.objects.get(id=profile_common_subject_id)
+        else: 
+            selected_common_subject = None
+        
         print("profile_public : ", profile_public)
         print("profile_user : ", profile_user)
 
@@ -251,7 +245,8 @@ def update_for_profile(request, id):
             github4=profile_github4,
             first_category=profile_first_category,
             last_category=profile_last_category,
-            public=profile_public
+            public=profile_public,
+            common_subject = selected_common_subject
         )
         print('update_for_profile Success !!!!!!!!!')
         return JsonResponse({
@@ -294,7 +289,12 @@ class my_profile_information_view(LoginRequiredMixin, ListView):
             id__in=my_favorite).order_by('-profile__skill_note_reputation')
         print("my_favorite_user_list : ", my_favorite_user_list)
 
+        common_subject_obj = CommonSubject.objects.all()
+        print("common_subject_obj : ", common_subject_obj)
+        # print("common_subject : ", self.request.user.profile.common_subject)
+
         context['my_favorite_user_list'] = my_favorite_user_list
+        context['common_subject_obj'] = common_subject_obj
 
         return context
 
