@@ -2719,7 +2719,7 @@ class SkilNoteListView(LoginRequiredMixin, ListView):
 
 
 class user_list_for_login_page(ListView):
-    paginate_by = 5
+    paginate_by = 20
     # if 'q' in request.GET:
     #     query = request.GET.get('q')
     #     print("query : ", query)
