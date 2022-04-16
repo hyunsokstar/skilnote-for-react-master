@@ -800,7 +800,7 @@ class main_page(LoginRequiredMixin, ListView):
         query = self.request.GET.get('q')
         print("query : ", query)
         object_list = User.objects.all().filter(
-            profile__public="True").order_by('-profile__user')
+            profile__public="True").order_by('username')
         print("result : ", object_list)
         return object_list
 
